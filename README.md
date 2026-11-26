@@ -48,8 +48,6 @@ different versions of the code:
 - **with a first, simpler fix**: a version that handled complex input but
   broke other cases, which is why I did not keep it;
 - **with the final fix**: all tests pass with NumPy;
-- **with the final fix, on the `array_api_strict` backend**: all tests pass
-  with the stricter backend as well.
 
 ### Notebook 1: `Savitzky-Golay_filter.ipynb`
 
@@ -70,13 +68,6 @@ simulates noisy samples of a known wave function on an evenly spaced grid. It
 then smooths them, estimates the first and second derivatives with the filter,
 and uses them to estimate the expected momentum and kinetic energy, which are
 compared with the values computed by hand.
-
-With the simulated data in the notebook, the estimates are
-$\langle p \rangle \approx 4.94$ (exact value $5$) and
-$\langle T \rangle \approx 13.06$ (exact value $13.125$). The released
-filter would give $\langle p \rangle = 0$, since the momentum is carried
-entirely by the imaginary part of the wave function. These numbers come from
-one simulated data set and depend on the noise level and the filter settings.
 
 ## Running the notebooks
 
@@ -114,3 +105,7 @@ input is kept.
 - J. S. Lundeen, B. Sutherland, A. Patel, C. Stewart and C. Bamber, "Direct
   measurement of the quantum wavefunction", *Nature* 474 (2011);
   [arXiv:1112.3575](https://arxiv.org/abs/1112.3575).
+- D. J. Griffiths, *Introduction to Quantum Mechanics*, Prentice Hall (1995),
+  Section 1.5 "Momentum", for the expectation values of momentum and kinetic
+  energy used in Notebook 2.
+  

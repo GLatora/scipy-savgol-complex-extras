@@ -1,0 +1,161 @@
+Invoking `build` prior to running tests:
+$ meson compile -j 12 -C build
+ninja: Entering directory `/Users/gl/scipy/build'
+[1/356] Generating scipy/generate-version with a custom command
+[2/356] Generating subprojects/highs/highs/HConfig.h with a custom command
+INFO: autodetecting backend as ninja
+INFO: calculating backend command to run: /Users/gl/.conda/envs/scipy-dev/bin/ninja -C /Users/gl/scipy/build -j 12
+$ meson install --no-rebuild --only-changed -C build --destdir ../build-install --tags=runtime,python-runtime,tests,devel --skip-subprojects
+$ export PYTHONPATH="/Users/gl/scipy/build-install/usr/lib/python3.15/site-packages"
+$ /Users/gl/.conda/envs/scipy-dev/bin/python3.15 -P -c 'import scipy'
+$ cd /Users/gl/scipy/build-install/usr/lib/python3.15/site-packages
+$ /Users/gl/.conda/envs/scipy-dev/bin/python3.15 -P -m pytest -m 'not slow' scipy/signal/tests/test_savitzky_golay.py
+============================= test session starts ==============================
+platform darwin -- Python 3.15.2, pytest-9.2.0, pluggy-1.7.0
+SciPy test environment: SCIPY_ARRAY_API=<unset>, SCIPY_DEVICE=<unset>, SCIPY_DEFAULT_DTYPE=<unset>, SCIPY_XSLOW=<unset>, SCIPY_HYPOTHESIS_PROFILE=<unset>, SCIPY_AVAILABLE_MEM=<unset>
+rootdir: /Users/gl/scipy
+configfile: pytest.ini
+plugins: platformdirs-4.14.5, hypothesis-6.170.15, cov-7.1.0, xdist-3.8.0, timeout-2.4.0, scipy_doctest-2.2.0, anyio-4.16.0
+collected 22 items
+
+scipy/signal/tests/test_savitzky_golay.py .....................F         [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_sg_filter_float16 ____________________________
+
+    def test_sg_filter_float16():
+        # Testing to see that float16 input is still converted to float64, as the
+        # convolution does not support float16. NumPy only, because not every
+        # array library has float16.
+        x = np.asarray([1, 5, 2, 8, 3, 9, 4, 7, 2, 6], dtype=np.float16)
+>       result = savgol_filter(x, 5, 2)
+                 ^^^^^^^^^^^^^^^^^^^^^^
+
+x          = array([1., 5., 2., 8., 3., 9., 4., 7., 2., 6.], dtype=float16)
+
+scipy/signal/tests/test_savitzky_golay.py:605: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scipy/signal/_support_alternative_backends.py:70: in wrapper
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+        args       = (array([1., 5., 2., 8., 3., 9., 4., 7., 2., 6.], dtype=float16), 5, 2)
+        delegator  = <function savgol_filter_signature at 0x1424905c0>
+        func       = <function savgol_filter at 0x136d0c510>
+        kwds       = {}
+        module_name = 'signal'
+        xp         = <module 'scipy._external.array_api_compat.numpy' from '/Users/gl/scipy/build-install/usr/lib/python3.15/site-packages/scipy/_external/array_api_compat/numpy/__init__.py'>
+scipy/signal/_savitzky_golay.py:397: in savgol_filter
+    y = convolve1d(x, coeffs, axis=axis, mode="constant")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        axis       = -1
+        coeffs     = array([-0.08571429,  0.34285714,  0.48571429,  0.34285714, -0.08571429])
+        cval       = 0.0
+        delta      = 1.0
+        deriv      = 0
+        mode       = 'interp'
+        polyorder  = 2
+        window_length = 5
+        x          = array([1., 5., 2., 8., 3., 9., 4., 7., 2., 6.], dtype=float16)
+        xp         = <module 'scipy._external.array_api_compat.numpy' from '/Users/gl/scipy/build-install/usr/lib/python3.15/site-packages/scipy/_external/array_api_compat/numpy/__init__.py'>
+scipy/ndimage/_support_alternative_backends.py:61: in wrapper
+    result = func(*args, **kwds)
+             ^^^^^^^^^^^^^^^^^^^
+        args       = (array([1., 5., 2., 8., 3., 9., 4., 7., 2., 6.], dtype=float16), array([-0.08571429,  0.34285714,  0.48571429,  0.34285714, -0.08571429]))
+        delegator  = <function convolve1d_signature at 0x136caee50>
+        device     = None
+        func       = <function convolve1d at 0x136c928d0>
+        kwds       = {'axis': -1, 'mode': 'constant'}
+        module_name = 'ndimage'
+        xp         = <module 'scipy._external.array_api_compat.numpy' from '/Users/gl/scipy/build-install/usr/lib/python3.15/site-packages/scipy/_external/array_api_compat/numpy/__init__.py'>
+scipy/ndimage/_filters.py:665: in convolve1d
+    return correlate1d(input, weights, axis, output, mode, cval, origin)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        axis       = -1
+        cval       = 0.0
+        input      = array([1., 5., 2., 8., 3., 9., 4., 7., 2., 6.], dtype=float16)
+        mode       = 'constant'
+        origin     = 0
+        output     = None
+        weights    = array([-0.08571429,  0.34285714,  0.48571429,  0.34285714, -0.08571429])
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = array([1., 5., 2., 8., 3., 9., 4., 7., 2., 6.], dtype=float16)
+weights = array([-0.08571429,  0.34285714,  0.48571429,  0.34285714, -0.08571429])
+axis = 0
+output = array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.], dtype=float16)
+mode = 4, cval = 0.0, origin = 0
+
+    @_ni_docstrings.docfiller
+    def correlate1d(input, weights, axis=-1, output=None, mode="reflect",
+                    cval=0.0, origin=0):
+        """Calculate a 1-D correlation along the given axis.
+    
+        The lines of the array along the given axis are correlated with the
+        given weights.
+    
+        Parameters
+        ----------
+        %(input)s
+        weights : array_like
+            The 1-D correlation kernel to correlate with each line of `input`
+            along `axis`.
+        %(axis)s
+        %(output)s
+        %(mode_reflect)s
+        %(cval)s
+        %(origin)s
+    
+        Returns
+        -------
+        result : ndarray
+            Correlation result. Has the same shape as `input`.
+    
+        Examples
+        --------
+        >>> from scipy.ndimage import correlate1d
+        >>> correlate1d([2, 8, 0, 4, 1, 9, 9, 0], weights=[1, 3])
+        array([ 8, 26,  8, 12,  7, 28, 36,  9])
+        """
+        input = np.asarray(input)
+        weights = np.asarray(weights)
+        complex_input = input.dtype.kind == 'c'
+        complex_weights = weights.dtype.kind == 'c'
+        if complex_input or complex_weights:
+            if complex_weights:
+                weights = weights.conj()
+                weights = weights.astype(np.complex128, copy=False)
+            kwargs = dict(axis=axis, mode=mode, origin=origin)
+            output = _ni_support._get_output(output, input, complex_output=True)
+            return _complex_via_real_components(correlate1d, input, weights,
+                                                output, cval, **kwargs)
+    
+        output = _ni_support._get_output(output, input)
+        weights = np.asarray(weights, dtype=np.float64)
+        if weights.ndim != 1 or weights.shape[0] < 1:
+            raise RuntimeError('no filter weights given')
+        if not weights.flags.contiguous:
+            weights = weights.copy()
+        axis = normalize_axis_index(axis, input.ndim)
+        if _invalid_origin(origin, len(weights)):
+            raise ValueError('Invalid origin; origin must satisfy '
+                             '-(len(weights) // 2) <= origin <= '
+                             '(len(weights)-1) // 2')
+        mode = _ni_support._extend_mode_to_code(mode)
+>       _nd_image.correlate1d(input, weights, axis, output, mode, cval,
+                              origin)
+E       RuntimeError: array type dtype('float16') not supported
+
+axis       = 0
+complex_input = False
+complex_weights = False
+cval       = 0.0
+input      = array([1., 5., 2., 8., 3., 9., 4., 7., 2., 6.], dtype=float16)
+mode       = 4
+origin     = 0
+output     = array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.], dtype=float16)
+weights    = array([-0.08571429,  0.34285714,  0.48571429,  0.34285714, -0.08571429])
+
+scipy/ndimage/_filters.py:621: RuntimeError
+=========================== short test summary info ============================
+FAILED scipy/signal/tests/test_savitzky_golay.py::test_sg_filter_float16 - Ru...
+========================= 1 failed, 21 passed in 0.54s =========================

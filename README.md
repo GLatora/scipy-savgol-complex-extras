@@ -1,1 +1,118 @@
-# scipy-savgol-complex-extras
+# Complex signals in `scipy.signal.savgol_filter`: supporting material
+ 
+This repository contains the supporting material for my project for the course
+20875 Software Engineering at Bocconi University. The project is a contribution
+to [SciPy](https://github.com/scipy/scipy): adding support for complex signals
+to the Savitzky–Golay filter, `scipy.signal.savgol_filter`, related to
+[issue #19771](https://github.com/scipy/scipy/issues/19771).
+ 
+**The changes to SciPy's code are in the pull request
+[scipy/scipy#26784](https://github.com/scipy/scipy/pull/26784)**, not in this
+repository. Here you will find the report on how I worked on it, the outputs
+of the tests I ran, and two notebooks that show the problem and the fixed
+filter in use.
+ 
+## The problem and the fix, in short
+ 
+The Savitzky–Golay filter smooths noisy data, and estimates its derivatives, by
+fitting a low-degree polynomial to each window of samples. This amounts to a
+weighted sum of the samples with real weights, so nothing in the method
+requires the data to be real. The released `savgol_filter`, however, converts
+its input to real floating point numbers before filtering: given a complex
+signal, it gives a `ComplexWarning` and silently discards the imaginary part.
+ 
+The pull request changes `scipy/signal/_savitzky_golay.py` so that complex
+input in single or double precision is filtered as it is, and other complex
+input is converted to `complex128` instead of being made real. It also fixes
+the edge handling for `mode='interp'`, which did not keep the dtype of the
+output consistent for some inputs. New tests in
+`scipy/signal/tests/test_savitzky_golay.py` check that filtering a complex
+signal gives the same result as filtering its real and imaginary parts
+separately, for smoothing, derivatives, the different edge modes,
+2-dimensional input and the output dtype.
+ 
+## Contents
+ 
+| Item | What it is |
+| --- | --- |
+| `report/` | The report on the project |
+| `test_outputs/` | Outputs of the test runs for the different versions of the code |
+| `Savitzky-Golay_filter.ipynb` | Notebook 1: the problem, with the released SciPy |
+| `Complex_Savitzky-Golay_Application.ipynb` | Notebook 2: the fixed filter applied to a quantum wave function |
+ 
+### Report
+ 
+A short report describing my process: how SciPy's development workflow works
+and how I set it up, how I approached the problem by writing the tests before
+changing the code, why the first fix that seemed obvious was not the right one,
+and the unexpected bug that only appeared when running the tests with a
+different array backend.
+ 
+### Test outputs
+ 
+The outputs of the new and existing `savgol_filter` tests, run locally on
+different versions of the code:
+ 
+- **without the fix**: the released code, where the new complex tests fail;
+- **with a first, simpler fix**: a version that handled complex input but
+  broke other cases, which is why I did not keep it;
+- **with the final fix**: all tests pass with NumPy;
+- **with the final fix, on the `array_api_strict` backend**: all tests pass
+  with the stricter backend as well.
+### Notebook 1: `Savitzky-Golay_filter.ipynb`
+ 
+Runs on the **released** version of SciPy and shows the problem. It first
+applies the filter to a noisy sine wave, for smoothing and for the first
+derivative, and compares the derivative with the one obtained directly from
+the noisy samples by finite differences. It then applies the same filter to a
+complex signal, noisy points on the unit circle, and shows that the imaginary
+part is discarded, both when smoothing and when estimating derivatives.
+ 
+### Notebook 2: `Complex_Savitzky-Golay_Application.ipynb`
+ 
+Runs on the **fixed** version of SciPy from the pull request and applies the
+filter to a physical example where complex numbers are essential: a quantum
+wave function. Following the idea of Lundeen et al. (2011), who measured the
+real and imaginary parts of a photon's wave function point by point, it
+simulates noisy samples of a known wave function on an evenly spaced grid. It
+then smooths them, estimates the first and second derivatives with the filter,
+and uses them to estimate the expected momentum and kinetic energy, which are
+compared with the values computed by hand.
+ 
+With the simulated data in the notebook, the estimates are
+$\langle p \rangle \approx 4.94$ (exact value $5$) and
+$\langle T \rangle \approx 13.06$ (exact value $13.125$). The released
+filter would give $\langle p \rangle = 0$, since the momentum is carried
+entirely by the imaginary part of the wave function. These numbers come from
+one simulated data set and depend on the noise level and the filter settings.
+ 
+## Running the notebooks
+ 
+Notebook 1 only needs NumPy, SciPy and Matplotlib, with any released SciPy
+version.
+ 
+Notebook 2 needs SciPy built from the branch of the pull request. Following
+the [SciPy contributor guide](https://scipy.github.io/devdocs/building/index.html):
+ 
+```bash
+git clone https://github.com/GLatora/scipy.git
+cd scipy
+git checkout savgol-complex
+git submodule update --init
+spin build
+```
+ 
+The first cell of the notebook adds the build to Python's path with
+`sys.path.insert`. The path there is the one on my computer, so change it to
+your own `build-install/usr/lib/python3.X/site-packages` folder. The cell then
+prints the SciPy version, which should end in `dev0`, and checks that complex
+input is kept.
+ 
+## References
+ 
+- SciPy issue [#19771](https://github.com/scipy/scipy/issues/19771) and pull
+  request [#26784](https://github.com/scipy/scipy/pull/26784).
+- A. Savitzky and M. J. E. Golay, "Smoothing and Differentiation of Data by
+  Simplified Least Squares Procedures", *Analytical Chemistry* 36 (1964).
+- J. S. Lundeen, B. Sutherland, A. Patel, C. Stewart and C. Bamber, "Direct
+  measurement of the quantum wavefunction", *Nature* 474 (

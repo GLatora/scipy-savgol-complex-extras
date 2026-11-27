@@ -52,7 +52,7 @@ different versions of the code:
 ### Notebook 1: `Savitzky-Golay_filter.ipynb`
 
 Runs on the **released** version of SciPy. It first
-applies the filter to a noisy sine wave, for smoothing and for the first
+applies the filter to noisy sine wave samples, for smoothing and for computing their first
 derivative, and compares the derivative with the one obtained directly from
 the noisy samples by finite differences. It then applies the same filter to a
 complex signal, noisy points on the unit circle, and shows that the imaginary

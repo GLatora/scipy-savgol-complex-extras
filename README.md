@@ -53,7 +53,7 @@ different versions of the code:
 
 Runs on the **released** version of SciPy. It first
 applies the filter to noisy sine wave samples, for smoothing and for computing their first
-derivative, and compares the derivative with the one obtained directly from
+derivative, and compares the obtained derivatives with those computed directly from
 the noisy samples by finite differences. It then applies the same filter to a
 complex signal, noisy points on the unit circle, and shows that the imaginary
 part is discarded, both when smoothing and when estimating derivatives.

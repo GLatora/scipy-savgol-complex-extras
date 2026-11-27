@@ -47,7 +47,7 @@ different versions of the code:
 - **without the fix**: the released code, where the new complex tests fail;
 - **with a first, simpler fix**: a version that handled complex input but
   broke other cases, which is why I did not keep it;
-- **with the final fix**: all tests pass with NumPy;
+- **with the final fix**: all tests pass;
 
 ### Notebook 1: `Savitzky-Golay_filter.ipynb`
 

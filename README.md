@@ -1,7 +1,7 @@
 # Complex signals in `scipy.signal.savgol_filter`: supporting material
 
 This repository contains the supporting material for my project for the course
-20875 Software Engineering at Bocconi University. The project is a contribution
+20875 Software Engineering. The project is a contribution
 to [SciPy](https://github.com/scipy/scipy): adding support for complex signals
 to the Savitzky–Golay filter, `scipy.signal.savgol_filter`, related to
 [issue #19771](https://github.com/scipy/scipy/issues/19771).

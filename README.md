@@ -69,28 +69,6 @@ then smooths them, estimates the first and second derivatives with the filter,
 and uses them to estimate the expected momentum and kinetic energy, which are
 compared with the values computed by hand.
 
-## Running the notebooks
-
-Notebook 1 only needs NumPy, SciPy and Matplotlib, with any released SciPy
-version.
-
-Notebook 2 needs SciPy built from the branch of the pull request. Following
-the [SciPy contributor guide](https://scipy.github.io/devdocs/building/index.html):
-
-```bash
-git clone https://github.com/GLatora/scipy.git
-cd scipy
-git checkout savgol-complex
-git submodule update --init
-spin build
-```
-
-The first cell of the notebook adds the build to Python's path with
-`sys.path.insert`. The path there is the one on my computer, so change it to
-your own `build-install/usr/lib/python3.X/site-packages` folder. The cell then
-prints the SciPy version, which should end in `dev0`, and checks that complex
-input is kept.
-
 ## References
 
 - SciPy issue [#19771](https://github.com/scipy/scipy/issues/19771) and pull
